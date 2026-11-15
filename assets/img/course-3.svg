@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="">
+ <defs>
+  <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+   <stop offset="0" stop-color="#2E4052"/>
+   <stop offset=".55" stop-color="#22303F"/>
+   <stop offset="1" stop-color="#17222D"/>
+  </linearGradient>
+  <pattern id="p3" width="120" height="120" patternUnits="userSpaceOnUse"
+           patternTransform="rotate(19) scale(.95)">
+   <rect x="18" y="18" width="84" height="84" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.8" transform="rotate(45 60 60)"/><rect x="26" y="26" width="68" height="68" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.5"/><path d="M 60.00,38.00 L 66.44,44.45 L 75.56,44.44 L 75.55,53.56 L 82.00,60.00 L 75.55,66.44 L 75.56,75.56 L 66.44,75.55 L 60.00,82.00 L 53.56,75.55 L 44.44,75.56 L 44.45,66.44 L 38.00,60.00 L 44.45,53.56 L 44.44,44.44 L 53.56,44.45 Z" fill="#FFD98A" opacity=".5"/><circle cx="0" cy="0" r="10" fill="rgba(227,195,90,.42)" opacity=".5"/><circle cx="120" cy="0" r="10" fill="rgba(227,195,90,.42)" opacity=".5"/><circle cx="0" cy="120" r="10" fill="rgba(227,195,90,.42)" opacity=".5"/><circle cx="120" cy="120" r="10" fill="rgba(227,195,90,.42)" opacity=".5"/>
+  </pattern>
+  <radialGradient id="v3" cx=".3" cy=".25" r=".95">
+   <stop offset="0" stop-color="#fff" stop-opacity=".16"/>
+   <stop offset="1" stop-color="#000" stop-opacity=".30"/>
+  </radialGradient>
+ </defs>
+ <rect width="800" height="500" fill="url(#g3)"/>
+ <rect width="800" height="500" fill="url(#p3)"/>
+ <rect width="800" height="500" fill="url(#v3)"/>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "name": "Al-Miftah Online Quran Academy",
+  "short_name": "Al-Miftah",
+  "description": "Online Quran classes with certified tutors — Noorani Qaida, Nazra, Tajweed, Hifz, Tafseer, Fiqh and Arabic.",
+  "start_url": "/al-miftah-preview/?utm_source=pwa",
+  "scope": "/al-miftah-preview/",
+  "display": "standalone",
+  "background_color": "#FBF8F1",
+  "theme_color": "#0B4F49",
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    { "src": "/al-miftah-preview/icons/android-chrome-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/al-miftah-preview/icons/android-chrome-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/al-miftah-preview/icons/maskable-512.png",       "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

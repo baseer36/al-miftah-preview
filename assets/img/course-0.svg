@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="">
+ <defs>
+  <linearGradient id="g0" x1="0" y1="0" x2="1" y2="1">
+   <stop offset="0" stop-color="#2E4052"/>
+   <stop offset=".55" stop-color="#22303F"/>
+   <stop offset="1" stop-color="#17222D"/>
+  </linearGradient>
+  <pattern id="p0" width="120" height="120" patternUnits="userSpaceOnUse"
+           patternTransform="rotate(-20) scale(.95)">
+   <path d="M 60.00,14.00 L 73.47,27.49 L 92.53,27.47 L 92.51,46.53 L 106.00,60.00 L 92.51,73.47 L 92.53,92.53 L 73.47,92.51 L 60.00,106.00 L 46.53,92.51 L 27.47,92.53 L 27.49,73.47 L 14.00,60.00 L 27.49,46.53 L 27.47,27.47 L 46.53,27.49 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="2"/><path d="M 70.33,35.06 L 74.61,45.39 L 84.94,49.67 L 80.66,60.00 L 84.94,70.33 L 74.61,74.61 L 70.33,84.94 L 60.00,80.66 L 49.67,84.94 L 45.39,74.61 L 35.06,70.33 L 39.34,60.00 L 35.06,49.67 L 45.39,45.39 L 49.67,35.06 L 60.00,39.34 Z" fill="#FFD98A" opacity=".5"/><path d="M 0.00,-30.00 L 8.78,-21.20 L 21.21,-21.21 L 21.20,-8.78 L 30.00,0.00 L 21.20,8.78 L 21.21,21.21 L 8.78,21.20 L 0.00,30.00 L -8.78,21.20 L -21.21,21.21 L -21.20,8.78 L -30.00,0.00 L -21.20,-8.78 L -21.21,-21.21 L -8.78,-21.20 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.6"/><path d="M 120.00,-30.00 L 128.78,-21.20 L 141.21,-21.21 L 141.20,-8.78 L 150.00,0.00 L 141.20,8.78 L 141.21,21.21 L 128.78,21.20 L 120.00,30.00 L 111.22,21.20 L 98.79,21.21 L 98.80,8.78 L 90.00,0.00 L 98.80,-8.78 L 98.79,-21.21 L 111.22,-21.20 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.6"/><path d="M 0.00,90.00 L 8.78,98.80 L 21.21,98.79 L 21.20,111.22 L 30.00,120.00 L 21.20,128.78 L 21.21,141.21 L 8.78,141.20 L 0.00,150.00 L -8.78,141.20 L -21.21,141.21 L -21.20,128.78 L -30.00,120.00 L -21.20,111.22 L -21.21,98.79 L -8.78,98.80 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.6"/><path d="M 120.00,90.00 L 128.78,98.80 L 141.21,98.79 L 141.20,111.22 L 150.00,120.00 L 141.20,128.78 L 141.21,141.21 L 128.78,141.20 L 120.00,150.00 L 111.22,141.20 L 98.79,141.21 L 98.80,128.78 L 90.00,120.00 L 98.80,111.22 L 98.79,98.79 L 111.22,98.80 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.6"/>
+  </pattern>
+  <radialGradient id="v0" cx=".3" cy=".25" r=".95">
+   <stop offset="0" stop-color="#fff" stop-opacity=".16"/>
+   <stop offset="1" stop-color="#000" stop-opacity=".30"/>
+  </radialGradient>
+ </defs>
+ <rect width="800" height="500" fill="url(#g0)"/>
+ <rect width="800" height="500" fill="url(#p0)"/>
+ <rect width="800" height="500" fill="url(#v0)"/>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="">
+ <defs>
+  <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+   <stop offset="0" stop-color="#2E4052"/>
+   <stop offset=".55" stop-color="#22303F"/>
+   <stop offset="1" stop-color="#17222D"/>
+  </linearGradient>
+  <pattern id="p2" width="120" height="120" patternUnits="userSpaceOnUse"
+           patternTransform="rotate(6) scale(.95)">
+   <path d="M 82.00,21.89 L 104.00,60.00 L 82.00,98.11 L 38.00,98.11 L 16.00,60.00 L 38.00,21.89 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="2"/><path d="M 73.00,37.48 L 86.00,60.00 L 73.00,82.52 L 47.00,82.52 L 34.00,60.00 L 47.00,37.48 Z" fill="#FFD98A" opacity=".45"/><path d="M 112.00,46.14 L 120.00,60.00 L 112.00,73.86 L 96.00,73.86 L 88.00,60.00 L 96.00,46.14 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.4"/><path d="M 90.00,84.25 L 98.00,98.11 L 90.00,111.96 L 74.00,111.96 L 66.00,98.11 L 74.00,84.25 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.4"/><path d="M 46.00,84.25 L 54.00,98.11 L 46.00,111.96 L 30.00,111.96 L 22.00,98.11 L 30.00,84.25 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.4"/><path d="M 24.00,46.14 L 32.00,60.00 L 24.00,73.86 L 8.00,73.86 L 0.00,60.00 L 8.00,46.14 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.4"/><path d="M 46.00,8.04 L 54.00,21.89 L 46.00,35.75 L 30.00,35.75 L 22.00,21.89 L 30.00,8.04 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.4"/><path d="M 90.00,8.04 L 98.00,21.89 L 90.00,35.75 L 74.00,35.75 L 66.00,21.89 L 74.00,8.04 Z" fill="none" stroke="rgba(227,195,90,.42)" stroke-width="1.4"/>
+  </pattern>
+  <radialGradient id="v2" cx=".3" cy=".25" r=".95">
+   <stop offset="0" stop-color="#fff" stop-opacity=".16"/>
+   <stop offset="1" stop-color="#000" stop-opacity=".30"/>
+  </radialGradient>
+ </defs>
+ <rect width="800" height="500" fill="url(#g2)"/>
+ <rect width="800" height="500" fill="url(#p2)"/>
+ <rect width="800" height="500" fill="url(#v2)"/>
+</svg>

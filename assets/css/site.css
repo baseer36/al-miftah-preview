@@ -1,0 +1,1193 @@
+/* ==========================================================================
+   Al-Miftah Online Quran Academy
+   Written with CSS logical properties throughout, so that setting
+   dir="rtl" on <html> mirrors the entire layout for Arabic and Urdu
+   without a second stylesheet.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- tokens */
+@font-face {
+  /* Mehr Nastaliq draws some Urdu digits (e.g. ۷) badly or not at all;
+     take digits from a system font instead. */
+  font-family: "UrNum";
+  src: local("Segoe UI"), local("Tahoma"), local("Noto Sans Arabic"), local("Noto Sans"), local("Arial");
+  unicode-range: U+06F0-06F9, U+0660-0669;
+}
+:root {
+  --green:        #2E4052;
+  --green-dark:   #22303F;
+  --green-deep:   #17222D;
+  --gold:         #FFC857;
+  --gold-light:   #FFD98A;
+  --ink:          #1B2733;
+  --ivory:        #F4F9F3;
+  --paper:        #FFFFFF;
+  --muted:        #6B7C8D;
+  --line:         #D2E4D3;
+  --line-soft:    #E4EFE4;
+
+  --font: "Inter", "Inter Display", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Bitstream Charter", Charter, Georgia, serif;
+  --font-ar: "Cairo", "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+  --font-ur: "UrNum", "Mehr", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Cairo", serif;
+
+  --wrap: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --radius: 14px;
+  --radius-lg: 20px;
+
+  --shadow-sm: 0 1px 2px rgba(34,48,63,.06), 0 2px 8px rgba(34,48,63,.05);
+  --shadow-md: 0 2px 6px rgba(34,48,63,.07), 0 12px 32px rgba(34,48,63,.09);
+  --shadow-lg: 0 8px 20px rgba(34,48,63,.10), 0 28px 60px rgba(34,48,63,.13);
+
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Amiri is a high-contrast naskh, so it needs a little more size than Inter
+   to hold the same optical weight. Mehr is nastaliq: it hangs on a steep
+   diagonal baseline and needs generous leading or the strokes collide. */
+html[lang="ar"] body {
+  font-family: var(--font-ar);
+  font-size: 17px;
+  line-height: 1.9;
+}
+html[lang="ur"] body {
+  font-family: var(--font-ur);
+  font-size: 18px;
+  line-height: 2.05;
+}
+html[lang="ur"] p,
+html[lang="ur"] li { margin-block-end: .9em; }
+html[lang="ur"] .lede { line-height: 2.2; }
+
+/* Nastaliq descenders need room inside anything with a fixed height */
+html[lang="ur"] .btn { min-block-size: 50px; padding-block: .5rem; line-height: 1.7; }
+html[lang="ur"] .nav a { padding-block: .5rem; line-height: 1.8; }
+html[lang="ur"] .field input,
+html[lang="ur"] .field select { min-block-size: 54px; line-height: 2; }
+html[lang="ar"] .btn { min-block-size: 50px; }
+
+/* Latin numerals and prices stay upright and tabular in both scripts */
+html[lang="ar"] .price, html[lang="ur"] .price,
+html[lang="ar"] .fee-table td, html[lang="ur"] .fee-table td {
+  font-family: var(--font);
+  font-variant-numeric: tabular-nums;
+}
+
+img, svg, video { max-width: 100%; height: auto; display: block; }
+
+/* ---------------------------------------------------------------- type */
+h1, h2, h3, h4 {
+  margin: 0 0 .6em;
+  line-height: 1.16;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+/* Display serif for the headings that carry the page; Inter keeps the
+   small, dense headings legible. Fraunces is held at WONK 0 so it reads
+   as a warm old-style serif rather than a decorative one. */
+h1, h2, .cta-strip h2, .hero h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 48;
+  letter-spacing: -.012em;
+}
+h1 { font-size: clamp(2.2rem, 1.35rem + 3.1vw, 3.7rem); line-height: 1.1; }
+h2 { font-size: clamp(1.65rem, 1.2rem + 1.7vw, 2.5rem); line-height: 1.14; }
+h3 { font-family: var(--font); font-weight: 650;
+     font-size: clamp(1.12rem, 1rem + .5vw, 1.4rem); letter-spacing: -.014em; }
+h4 { font-family: var(--font); font-weight: 650;
+     font-size: 1.02rem; letter-spacing: -.008em; }
+
+/* Arabic and Urdu have their own faces at every level — a Latin serif
+   must never be allowed to fall through to Arabic script. */
+html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3, html[lang="ar"] h4 {
+  font-family: var(--font-ar); font-weight: 700;
+  font-variation-settings: normal; letter-spacing: 0; line-height: 1.45;
+}
+html[lang="ur"] h1, html[lang="ur"] h2, html[lang="ur"] h3, html[lang="ur"] h4 {
+  font-family: var(--font-ur); font-weight: 400;
+  font-variation-settings: normal; letter-spacing: 0;
+  line-height: 1.75; text-wrap: initial;
+}
+/* Mehr has a single weight, so hierarchy in Urdu is carried by size alone */
+html[lang="ur"] h1 { font-size: clamp(1.8rem, 1.1rem + 2.1vw, 2.6rem); line-height: 1.7; }
+html[lang="ur"] h2 { font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.1rem); }
+html[lang="ur"] h3 { font-size: clamp(1.1rem, 1rem + .45vw, 1.32rem); }
+html[lang="ar"] h1 { line-height: 1.6; }
+html[lang="ar"] h2 { line-height: 1.65; }
+
+/* The eyebrow rule is a Latin convention; in RTL it must flip and the
+   uppercase/letterspacing treatment does not apply to Arabic script. */
+html[lang="ar"] .eyebrow, html[lang="ur"] .eyebrow {
+  text-transform: none; letter-spacing: 0; font-size: .9rem;
+}
+html[lang="ur"] .eyebrow { font-family: var(--font-ur); line-height: 2.2; }
+html[lang="ar"] .eyebrow { font-family: var(--font-ar); }
+
+p { margin: 0 0 1.15em; }
+p, li { text-wrap: pretty; }
+
+a { color: var(--green); text-underline-offset: .22em; text-decoration-thickness: 1px; }
+a:hover { color: var(--green-dark); }
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2.5px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.lede {
+  font-size: clamp(1.06rem, .98rem + .4vw, 1.22rem);
+  line-height: 1.6;
+  color: #2E4052;
+  max-width: 62ch;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .55em;
+  font-size: .735rem; font-weight: 600; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--muted); margin: 0 0 1.1em;
+}
+.eyebrow::before {
+  content: ""; inline-size: 1.75rem; block-size: 1px;
+  background: var(--gold); flex: none;
+}
+.sr {
+  position: absolute; inline-size: 1px; block-size: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+.skip {
+  position: absolute; inset-block-start: -100px; inset-inline-start: 1rem;
+  z-index: 200; background: var(--green); color: #fff;
+  padding: .7rem 1.1rem; border-radius: 0 0 8px 8px; font-weight: 600;
+}
+.skip:focus { inset-block-start: 0; }
+
+/* ---------------------------------------------------------------- layout */
+.wrap { inline-size: 100%; max-inline-size: var(--wrap); margin-inline: auto;
+        padding-inline: var(--gutter); }
+section { padding-block: clamp(3.25rem, 7vw, 6rem); }
+.section-head { max-inline-size: 60ch; margin-block-end: clamp(2rem, 4vw, 3rem); }
+.band { background: var(--paper); border-block: 1px solid var(--line); }
+.band-green { background: var(--green-dark); color: #E4ECF3; }
+.band-green h2, .band-green h3 { color: #fff; }
+.band-green .eyebrow { color: var(--gold-light); }
+.band-green .eyebrow::before { background: var(--gold); }
+
+.grid { display: grid; gap: clamp(1.1rem, 2.2vw, 1.75rem); }
+.g-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
+.g-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+.g-4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+
+/* ---------------------------------------------------------------- buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .55em;
+  padding: .82rem 1.5rem; border-radius: 100px; border: 1.5px solid transparent;
+  font: inherit; font-size: .945rem; font-weight: 600; letter-spacing: -.005em;
+  text-decoration: none; cursor: pointer; min-block-size: 48px;
+  transition: transform .18s var(--ease), box-shadow .18s var(--ease),
+              background-color .18s var(--ease), border-color .18s var(--ease);
+}
+.btn:hover { transform: translateY(-1.5px); }
+.btn:active { transform: translateY(0); }
+.btn svg { inline-size: 1.05em; block-size: 1.05em; flex: none; }
+
+.btn-primary { background: var(--green); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background: var(--green-dark); color: #fff; box-shadow: var(--shadow-md); }
+
+.btn-gold { background: var(--gold); color: #2E4052; box-shadow: var(--shadow-sm); }
+.btn-gold:hover { background: var(--gold-light); color: #2E4052; box-shadow: var(--shadow-md); }
+
+.btn-ghost { border-color: var(--line); background: var(--paper); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--green); background: var(--paper); color: var(--green); }
+
+.btn-ghost-light { border-color: rgba(255,255,255,.34); color: #fff; background: transparent; }
+.btn-ghost-light:hover { border-color: #fff; background: rgba(255,255,255,.08); color: #fff; }
+
+.btn-wa { background: #1FA855; color: #fff; }
+.btn-wa:hover { background: #178C46; color: #fff; }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: .7rem; }
+
+/* ---------------------------------------------------------------- header */
+.site-head {
+  position: sticky; inset-block-start: 0; z-index: 90;
+  background: rgba(244,249,243,.88);
+  backdrop-filter: saturate(1.6) blur(14px);
+  border-block-end: 1px solid var(--line);
+}
+.head-in { display: flex; align-items: center; gap: 1.25rem;
+           min-block-size: 76px; }
+.brand { display: inline-flex; align-items: center; gap: .7rem;
+         text-decoration: none; margin-inline-end: auto; flex: none; }
+.brand img { block-size: 44px; inline-size: auto; }
+
+.nav { display: flex; align-items: center; gap: .15rem; }
+.nav a {
+  display: inline-block; padding: .55rem .78rem; border-radius: 9px;
+  font-size: .93rem; font-weight: 520; color: #2E4052; text-decoration: none;
+  transition: background-color .15s var(--ease), color .15s var(--ease);
+}
+.nav a:hover { background: rgba(46,64,82,.07); color: var(--green-dark); }
+.nav a.on { color: var(--green); font-weight: 650; }
+
+.head-cta { display: flex; align-items: center; gap: .55rem; flex: none; }
+
+.lang-wrap { position: relative; display: inline-flex; }
+.lang {
+  position: relative; display: inline-flex; align-items: center; gap: .4em;
+  padding: .5rem .7rem; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--paper); font: inherit; font-size: .86rem; font-weight: 550;
+  color: #2E4052; cursor: pointer; min-block-size: 40px;
+}
+.lang:hover { border-color: var(--green); color: var(--green); }
+.lang-menu {
+  position: absolute; inset-block-start: calc(100% + .4rem); inset-inline-end: 0;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 11px; box-shadow: var(--shadow-md); padding: .3rem;
+  min-inline-size: 10.5rem; display: none; z-index: 95;
+}
+.lang-menu.open { display: block; }
+.lang-menu a {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .55rem .7rem; border-radius: 7px; font-size: .9rem;
+  color: var(--ink); text-decoration: none;
+}
+.lang-menu a:hover { background: var(--line-soft); }
+.lang-menu a span { color: var(--muted); font-size: .82rem; }
+
+.burger {
+  display: none; align-items: center; justify-content: center;
+  inline-size: 44px; block-size: 44px; border: 1px solid var(--line);
+  border-radius: 10px; background: var(--paper); cursor: pointer;
+}
+.burger svg { inline-size: 20px; block-size: 20px; }
+
+.btn-text-sm { display: none; }
+.nav .nav-cta { display: none; }
+
+@media (max-width: 1000px) {
+  .burger { display: inline-flex; }
+  .head-cta .btn-text { display: none; }
+  .head-cta .btn-text-sm { display: inline; }
+  .head-cta .btn-primary { padding-inline: 1.1rem; }
+  .nav .nav-cta { display: block; font-weight: 650; color: var(--green); }
+  .nav {
+    position: absolute; inset-block-start: 100%; inset-inline: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--paper); border-block-end: 1px solid var(--line);
+    padding: .5rem var(--gutter) 1rem; display: none;
+    box-shadow: var(--shadow-md);
+  }
+  .nav.open { display: flex; }
+  .nav a { padding: .8rem .2rem; border-radius: 0;
+           border-block-end: 1px solid var(--line-soft); }
+}
+/* Arabic and Urdu labels are wider than the English ones, so the header
+   CTA has to drop out earlier. It stays reachable inside the menu. */
+@media (max-width: 560px) {
+  .head-cta .btn-primary { display: none; }
+  .brand img { block-size: 38px; }
+  .head-in { gap: .6rem; }
+}
+
+/* ---------------------------------------------------------------- hero */
+.hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--green-dark); color: #fff;
+  padding-block: clamp(3.5rem, 8vw, 7rem);
+}
+.hero-media { position: absolute; inset: 0; z-index: -2; }
+.hero-slide {
+  position: absolute; inset: 0; opacity: 0;
+  transition: opacity 1.1s var(--ease);
+  background-size: cover; background-position: center;
+}
+.hero-slide.on { opacity: 1; }
+.hero-slide img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(100deg, rgba(23,34,45,.95) 0%, rgba(34,48,63,.88) 46%, rgba(34,48,63,.55) 100%);
+}
+html[dir="rtl"] .hero::after {
+  background:
+    linear-gradient(260deg, rgba(23,34,45,.95) 0%, rgba(34,48,63,.88) 46%, rgba(34,48,63,.55) 100%);
+}
+.hero-in { position: relative; max-inline-size: 41rem; margin-inline-end: auto; }
+.hero h1 { color: #fff; margin-block-end: .5em; }
+.hero .lede { color: #D5DEE7; max-inline-size: 36rem; }
+.hero .eyebrow { color: var(--gold-light); }
+.hero .eyebrow::before { background: var(--gold); }
+
+.hero-points {
+  list-style: none; margin: 1.9rem 0 2.1rem; padding: 0;
+  display: flex; flex-wrap: wrap; gap: .55rem 1.4rem;
+}
+.hero-points li {
+  display: flex; align-items: center; gap: .5em;
+  font-size: .93rem; color: #C9D6E0;
+}
+.hero-points svg { inline-size: 1.05em; block-size: 1.05em; color: var(--gold); flex: none; }
+
+.hero-dots {
+  position: absolute; inset-block-end: 1.5rem; inset-inline-start: var(--gutter);
+  display: flex; gap: .5rem; z-index: 3;
+}
+.hero-dots button {
+  inline-size: 30px; block-size: 4px; border: 0; padding: 0; cursor: pointer;
+  border-radius: 99px; background: rgba(255,255,255,.3);
+  transition: background-color .3s var(--ease);
+}
+.hero-dots button[aria-current="true"] { background: var(--gold); }
+
+/* ---------------------------------------------------------------- cards */
+.card {
+  position: relative; display: flex; flex-direction: column;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); overflow: hidden;
+  transition: transform .22s var(--ease), box-shadow .22s var(--ease),
+              border-color .22s var(--ease);
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md);
+              border-color: #BDD9BF; }
+.card-art { aspect-ratio: 16 / 10; background: var(--green-dark); }
+.card-art img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.card-body { padding: 1.4rem 1.45rem 1.5rem; display: flex;
+             flex-direction: column; flex: 1 1 auto; }
+.card h3 { margin-block-end: .45em; }
+.card h3 a { color: inherit; text-decoration: none; }
+.card h3 a:hover { color: var(--green); }
+.card p { font-size: .935rem; color: #4A5B6D; margin-block-end: 1.1rem; }
+.card .btn-row { margin-block-start: auto; }
+.card .btn { padding: .6rem .9rem; font-size: .845rem; min-block-size: 44px; }
+.card .btn-row { gap: .5rem; flex-wrap: nowrap; }
+@media (max-width: 420px) { .card .btn-row { flex-wrap: wrap; } }
+
+.tag {
+  position: absolute; inset-block-start: .85rem; inset-inline-start: .85rem;
+  z-index: 2; display: inline-flex; align-items: center; gap: .35em;
+  padding: .33rem .7rem; border-radius: 99px;
+  background: var(--gold); color: #2E4052;
+  font-size: .715rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+}
+.meta-row {
+  display: flex; flex-wrap: wrap; gap: .4rem .9rem;
+  font-size: .82rem; color: var(--muted); margin-block-end: .9rem;
+}
+.meta-row span { display: inline-flex; align-items: center; gap: .35em; }
+.meta-row svg { inline-size: .95em; block-size: .95em; flex: none; }
+
+/* ---------------------------------------------------------------- fees */
+.fee-table { inline-size: 100%; border-collapse: collapse; font-size: .95rem; }
+.fee-table caption { text-align: start; font-weight: 650; font-family: var(--font); color: var(--ink);
+                     padding-block-end: .8rem; font-size: 1.05rem; }
+.fee-table th, .fee-table td {
+  text-align: start; padding: .85rem 1rem;
+  border-block-end: 1px solid var(--line-soft);
+}
+.fee-table thead th {
+  font-size: .76rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); font-weight: 650; border-block-end: 1px solid var(--line);
+}
+.fee-table tbody tr:last-child td { border-block-end: 0; }
+.fee-table .price { font-weight: 700; color: var(--green); font-size: 1.08rem;
+                    font-variant-numeric: tabular-nums; }
+.fee-wrap { background: var(--paper); border: 1px solid var(--line);
+            border-radius: var(--radius-lg); padding: 1.6rem; }
+
+/* ---------------------------------------------------------------- prose */
+.prose { max-inline-size: 68ch; }
+.prose h2 { margin-block-start: 2.2em; }
+.prose h3 { margin-block-start: 1.8em; }
+.prose > :first-child { margin-block-start: 0; }
+.prose ul, .prose ol { padding-inline-start: 1.3em; margin-block-end: 1.3em; }
+.prose li { margin-block-end: .5em; }
+.prose blockquote {
+  margin: 1.6em 0; padding: .2em 0 .2em 1.3em;
+  border-inline-start: 3px solid var(--gold);
+  color: #2E4052; font-size: 1.05rem;
+}
+.prose table { inline-size: 100%; border-collapse: collapse; margin-block-end: 1.5em;
+               font-size: .94rem; }
+.prose th, .prose td { text-align: start; padding: .7rem .9rem;
+                       border-block-end: 1px solid var(--line-soft); }
+.prose thead th { border-block-end: 1px solid var(--line); font-size: .78rem;
+                  letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+
+.answer {
+  background: var(--paper); border: 1px solid var(--line);
+  border-inline-start: 3px solid var(--gold);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.15rem 1.3rem; margin-block-end: 1.8em;
+}
+.answer p:last-child { margin-block-end: 0; }
+.answer strong { color: var(--green-dark); }
+
+/* ---------------------------------------------------------------- lists */
+.check { list-style: none; padding: 0; margin: 0 0 1.4em; }
+.check li {
+  position: relative; padding-inline-start: 1.9em; margin-block-end: .7em;
+  font-size: .98rem;
+}
+.check li::before {
+  content: ""; position: absolute; inset-inline-start: 0; inset-block-start: .42em;
+  inline-size: 1.05em; block-size: 1.05em; flex: none;
+  background: var(--gold);
+  -webkit-mask: var(--tick) center / contain no-repeat;
+          mask: var(--tick) center / contain no-repeat;
+}
+:root {
+  --tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6 9 17l-5-5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+.steps > li {
+  counter-increment: s; position: relative;
+  padding-inline-start: 3.4rem; padding-block-end: 1.9rem;
+}
+.steps > li::before {
+  content: counter(s); position: absolute; inset-inline-start: 0; inset-block-start: -.1rem;
+  inline-size: 2.3rem; block-size: 2.3rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--green); color: #fff; font-size: .9rem; font-weight: 700;
+}
+.steps > li::after {
+  content: ""; position: absolute; inset-inline-start: 1.14rem; inset-block-start: 2.5rem;
+  inline-size: 2px; block-size: calc(100% - 2.9rem); background: var(--line);
+}
+.steps > li:last-child { padding-block-end: 0; }
+.steps > li:last-child::after { display: none; }
+.steps h3 { margin-block-end: .3em; }
+.steps p { font-size: .95rem; color: #4A5B6D; margin-block-end: 0; }
+
+/* ---------------------------------------------------------------- faq */
+.faq { border-block-start: 1px solid var(--line); }
+.faq details { border-block-end: 1px solid var(--line); }
+.faq summary {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1.2rem;
+  padding: 1.15rem 0; cursor: pointer; list-style: none;
+  font-weight: 600; font-size: 1.04rem; color: var(--ink);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: ""; flex: none; inline-size: 1.1rem; block-size: 1.1rem;
+  margin-block-start: .25rem; background: var(--green);
+  -webkit-mask: var(--plus) center / contain no-repeat;
+          mask: var(--plus) center / contain no-repeat;
+  transition: transform .22s var(--ease);
+}
+.faq details[open] summary::after { transform: rotate(45deg); }
+:root {
+  --plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 5v14M5 12h14' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.faq .ans { padding-block-end: 1.2rem; color: #4A5B6D; font-size: .99rem;
+            max-inline-size: 68ch; }
+.faq .ans p:last-child { margin-block-end: 0; }
+
+/* ---------------------------------------------------------------- trial note */
+.trial-note {
+  display: flex; gap: 1rem; align-items: flex-start;
+  background: #F4F9F3; border: 1px solid #D5DEE7;
+  border-radius: var(--radius); padding: 1.15rem 1.3rem; margin-block: 1.6rem;
+}
+.trial-note svg { inline-size: 1.4rem; block-size: 1.4rem; color: var(--green);
+                  flex: none; margin-block-start: .1rem; }
+.trial-note p { margin: 0; font-size: .95rem; color: #2E4052; }
+.trial-note strong { color: var(--green-dark); }
+
+/* ---------------------------------------------------------------- form */
+.form-grid { display: grid; gap: 1.05rem; grid-template-columns: repeat(2, 1fr); }
+.field { display: flex; flex-direction: column; gap: .4rem; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-size: .875rem; font-weight: 600; color: #2E4052; }
+.field .hint { font-size: .8rem; color: var(--muted); font-weight: 400; }
+.field input, .field select, .field textarea {
+  font: inherit; font-size: .97rem; color: var(--ink);
+  padding: .75rem .9rem; min-block-size: 48px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--paper);
+  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+}
+.field textarea { min-block-size: 7rem; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--green); outline: none;
+  box-shadow: 0 0 0 3px rgba(46,64,82,.12);
+}
+@media (max-width: 680px) { .form-grid { grid-template-columns: 1fr; } }
+
+/* ---------------------------------------------------------------- footer */
+.site-foot { background: var(--green-deep); color: #B5C5D4;
+             padding-block: clamp(3rem, 6vw, 4.5rem) 0; }
+.foot-top { display: grid; gap: 2.5rem;
+            grid-template-columns: minmax(16rem, 1.4fr) repeat(3, minmax(9rem, 1fr)); }
+.foot-brand img { block-size: 52px; inline-size: auto; margin-block-end: 1.1rem; }
+.foot-brand p { font-size: .93rem; color: #A3B5C6; max-inline-size: 32ch; }
+.site-foot h2 {
+  font-family: var(--font); font-weight: 650;
+  font-variation-settings: normal;
+  font-size: .76rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--gold-light); font-weight: 650; margin-block-end: 1.1rem;
+}
+.foot-links { list-style: none; padding: 0; margin: 0; }
+.foot-links li { margin-block-end: .62em; }
+.foot-links a { color: #C9D6E0; text-decoration: none; font-size: .93rem; }
+.foot-links a:hover { color: #fff; text-decoration: underline; }
+.foot-contact a { display: inline-flex; align-items: center; gap: .5em;
+                  color: #C9D6E0; text-decoration: none; font-size: .93rem; }
+.foot-contact a:hover { color: #fff; }
+.foot-contact svg { inline-size: 1.05em; block-size: 1.05em; color: var(--gold); flex: none; }
+.foot-contact li { margin-block-end: .7em; }
+.foot-bar {
+  margin-block-start: clamp(2.5rem, 5vw, 3.5rem);
+  border-block-start: 1px solid rgba(255,255,255,.1);
+  padding-block: 1.4rem; display: flex; flex-wrap: wrap;
+  gap: .6rem 1.5rem; align-items: center; justify-content: space-between;
+  font-size: .85rem; color: #8FA3B5;
+}
+.foot-bar nav { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; }
+.foot-bar a { color: #8FA3B5; text-decoration: none; }
+.foot-bar a:hover { color: #fff; }
+@media (max-width: 860px) {
+  .foot-top { grid-template-columns: repeat(2, 1fr); }
+  .foot-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) { .foot-top { grid-template-columns: 1fr; } }
+
+/* ---------------------------------------------------------------- misc */
+.crumbs { font-size: .85rem; color: var(--muted); padding-block: 1.1rem 0; }
+.crumbs ol { list-style: none; display: flex; flex-wrap: wrap; gap: .4em;
+             padding: 0; margin: 0; }
+.crumbs li::after { content: "/"; margin-inline-start: .45em; color: #BDD9BF; }
+.crumbs li:last-child::after { content: ""; }
+.crumbs a { color: var(--muted); text-decoration: none; }
+.crumbs a:hover { color: var(--green); text-decoration: underline; }
+
+.page-head { padding-block: clamp(2.25rem, 5vw, 3.5rem) 0; }
+.page-head .lede { margin-block-start: .4em; }
+
+.pattern-edge {
+  block-size: 6px;
+  background: repeating-linear-gradient(90deg,
+    var(--gold) 0 10px, transparent 10px 20px,
+    var(--green) 20px 30px, transparent 30px 40px);
+  opacity: .45;
+}
+
+.note-sm { font-size: .85rem; color: var(--muted); }
+
+.cta-strip {
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  color: #fff; border-radius: var(--radius-lg);
+  padding: clamp(1.9rem, 4vw, 3rem); text-align: center;
+}
+.cta-strip h2 { color: #fff; }
+.cta-strip p { color: #D5DEE7; max-inline-size: 50ch; margin-inline: auto; }
+.cta-strip .btn-row { justify-content: center; margin-block-start: 1.5rem; }
+
+.pill-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-block-end: 1.4rem; }
+.pill {
+  display: inline-flex; align-items: center; gap: .4em;
+  padding: .4rem .85rem; border-radius: 99px;
+  border: 1px solid var(--line); background: var(--paper);
+  font-size: .85rem; color: #2E4052; text-decoration: none;
+}
+.pill:hover { border-color: var(--green); color: var(--green); }
+
+/* ==========================================================================
+   RTL refinements — Arabic and Urdu
+   Placed last so these win over the Latin-first defaults above.
+   ========================================================================== */
+
+/* Arabic script is cursive: letters join. Letter-spacing pulls those joins
+   apart and uppercase does nothing, so both are switched off everywhere
+   rather than per component. */
+html[lang="ar"] *,
+html[lang="ur"] * {
+  letter-spacing: 0;
+  text-transform: none;
+  font-variation-settings: normal;
+}
+
+/* Balanced wrapping assumes Latin word shapes and leaves Arabic lines
+   stranded, so headings wrap normally instead. */
+html[lang="ar"] :where(h1, h2, h3, h4, p, li),
+html[lang="ur"] :where(h1, h2, h3, h4, p, li) { text-wrap: initial; }
+
+/* ---- numerals, currency and anything that must stay left-to-right ---- */
+html[dir="rtl"] td.price {
+  direction: ltr;
+  text-align: right;          /* the start edge inside an RTL table */
+  font-family: var(--font);
+}
+html[dir="rtl"] .steps > li::before { direction: ltr; }
+html[dir="rtl"] bdi { font-family: var(--font); }
+html[dir="rtl"] .crumbs li::after { unicode-bidi: isolate; }
+
+/* ---- the eyebrow rule sits before the text, which in RTL is the right ---- */
+html[dir="rtl"] .eyebrow::before { margin-inline-end: 0; }
+html[lang="ar"] .eyebrow, html[lang="ur"] .eyebrow { align-items: center; }
+html[lang="ur"] .eyebrow { gap: .75em; }
+
+/* ---- Arabic: Amiri is a naskh with a small x-height, so components that
+       were spaced for Inter need a little more room ---- */
+html[lang="ar"] .card p { line-height: 1.85; }
+html[lang="ar"] .meta-row { line-height: 1.9; gap: .5rem 1rem; }
+html[lang="ar"] .check li { padding-inline-start: 2.1em; line-height: 1.9; }
+html[lang="ar"] .check li::before { inset-block-start: .52em; }
+html[lang="ar"] .faq summary { line-height: 1.8; padding-block: 1.25rem; }
+html[lang="ar"] .steps p { line-height: 1.9; }
+html[lang="ar"] .hero-points li { line-height: 1.9; }
+html[lang="ar"] .prose blockquote { padding-inline-start: 1.5em; }
+
+/* ---- Urdu: nastaliq hangs on a steep diagonal and its descenders run
+       deep, so every line box needs real room or the strokes collide ---- */
+html[lang="ur"] .card p { line-height: 2.1; }
+html[lang="ur"] .card h3 { line-height: 1.8; margin-block-end: .4em; }
+html[lang="ur"] .meta-row { line-height: 2.1; gap: .4rem 1rem; }
+html[lang="ur"] .check li { padding-inline-start: 2.3em; line-height: 2.1; }
+html[lang="ur"] .check li::before { inset-block-start: .72em; }
+html[lang="ur"] .faq summary { line-height: 1.9; padding-block: 1.05rem; }
+html[lang="ur"] .faq .ans { line-height: 2.15; }
+html[lang="ur"] .steps > li { padding-block-end: 1.6rem; }
+html[lang="ur"] .steps p { line-height: 2.1; }
+html[lang="ur"] .steps h3 { line-height: 1.8; margin-block-end: .3em; }
+html[lang="ur"] .hero-points li { line-height: 2.3; }
+html[lang="ur"] .hero-points { gap: .85rem 1.6rem; }
+html[lang="ur"] .fee-table th,
+html[lang="ur"] .fee-table td { padding-block: 1.1rem; line-height: 2.2; }
+html[lang="ur"] .fee-table caption { line-height: 2.1; padding-block-end: 1rem; }
+html[lang="ur"] .field label { line-height: 2.1; }
+html[lang="ur"] .trial-note p { line-height: 2.4; }
+html[lang="ur"] .prose blockquote { padding-inline-start: 1.7em; }
+html[lang="ur"] .lang { min-block-size: 44px; }
+html[lang="ur"] .foot-links li { margin-block-end: .95em; }
+html[lang="ur"] .foot-links a,
+html[lang="ur"] .foot-contact a { line-height: 2.2; }
+html[lang="ur"] .site-foot h2 { line-height: 2.1; margin-block-end: 1.3rem; }
+html[lang="ur"] .tag { padding-block: .5rem; line-height: 1.6; }
+html[lang="ur"] .pill { padding-block: .6rem; line-height: 2; }
+
+/* Urdu headings sit high in their line box; trim the space underneath so
+   a heading does not float away from the paragraph it belongs to. */
+html[lang="ur"] h1 { margin-block-end: .35em; }
+html[lang="ur"] h2 { margin-block-end: .45em; }
+html[lang="ur"] .section-head .lede { margin-block-start: .2em; }
+
+/* ---- form fields read from the right in both ---- */
+html[dir="rtl"] .field input,
+html[dir="rtl"] .field select,
+html[dir="rtl"] .field textarea { text-align: start; }
+html[dir="rtl"] .field input[type="number"],
+html[dir="rtl"] .field input[type="tel"] { direction: ltr; text-align: right; }
+
+/* ---- footer language switcher ---- */
+.foot-langs { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; align-items: center; }
+.foot-langs a { color: #C9D6E0; text-decoration: none; font-size: .88rem; }
+.foot-langs a:hover { color: #fff; text-decoration: underline; }
+.foot-langs a[aria-current] { color: var(--gold-light); font-weight: 600; }
+.foot-langs a[lang="ar"] { font-family: var(--font-ar); font-size: 1rem; }
+.foot-langs a[lang="ur"] { font-family: var(--font-ur); font-size: 1rem; }
+.foot-langs a[lang="en"] { font-family: var(--font); }
+
+/* Latin runs inside RTL text — phone numbers, email, the brand name — must be
+   isolated or the bidi algorithm reorders their segments. The markup carries
+   <bdi dir="ltr">; this is the safety net for anything that does not. */
+html[dir="rtl"] a[href^="tel:"],
+html[dir="rtl"] a[href^="mailto:"],
+html[dir="rtl"] a[href*="wa.me"],
+html[dir="rtl"] .foot-contact a { unicode-bidi: isolate; }
+html[dir="rtl"] bdi[dir="ltr"] { unicode-bidi: isolate; }
+
+/* Arabic display headings were a touch loose and left single words stranded
+   on the last line; Amiri carries a shorter line comfortably. */
+html[lang="ar"] h1 { line-height: 1.35; font-weight: 700; }
+html[lang="ar"] h2 { line-height: 1.4; font-weight: 700; }
+html[lang="ar"] .hero-in { max-inline-size: 46rem; }
+html[lang="ar"] .hero .lede { max-inline-size: 40rem; }
+
+/* Nastaliq reads small at a given font-size, so Urdu display type is set
+   a step larger than the Latin equivalent. */
+html[lang="ur"] h1 { font-size: clamp(2.05rem, 1.3rem + 2.8vw, 3.25rem); }
+html[lang="ur"] .hero-in { max-inline-size: 47rem; }
+html[lang="ur"] .hero .lede { max-inline-size: 41rem; font-size: 1.12rem; }
+html[lang="ur"] .section-head .lede { font-size: 1.08rem; }
+
+/* Nastaliq ascenders rise well above the cap line — give headings room so
+   the top strokes are never clipped by an overflow boundary. */
+html[lang="ur"] :where(h1, h2, h3) { padding-block-start: .12em; }
+html[lang="ur"] .site-foot h2 { padding-block-start: .2em; }
+
+/* ---- header: one height, one shape for every control ---- */
+.head-cta { gap: .65rem; }
+.head-cta .btn, .head-cta .lang, .head-cta .burger { min-block-size: 44px; block-size: 44px; }
+.head-cta .btn { padding-block: 0; }
+.head-cta .lang { border-radius: 100px; padding-inline: .95rem; }
+.head-cta .lang svg { inline-size: 1.05em; block-size: 1.05em; }
+html[lang="ar"] .head-cta .btn, html[lang="ur"] .head-cta .btn { padding-block: 0; min-block-size: 44px; }
+html[lang="ur"] .nav a { font-size: 1.02rem; }
+html[lang="ur"] .hero-in { max-inline-size: 54rem; }
+/* nastaliq sits high in its line box; nudge the label down so it centres in a button */
+
+
+/* ---- Urdu/Arabic buttons: Mehr has one weight (600 would be a faux-bold smear),
+        and paired buttons should be equal width and aligned ---- */
+html[lang="ur"] .btn, html[lang="ur"] .nav a, html[lang="ur"] .lang,
+html[lang="ur"] .btn-primary, html[lang="ur"] .btn-gold { font-weight: 400; }
+html[lang="ar"] .btn { font-weight: 700; }
+.card .btn-row .btn { flex: 1 1 0; padding-inline: 1rem; white-space: nowrap; }
+.btn-row .btn { min-inline-size: 9.5rem; }
+html[lang="ur"] .btn { font-size: 1.02rem; }
+/* tighter vertical rhythm for the Urdu pages */
+html[lang="ur"] section { padding-block: clamp(2.5rem, 5vw, 4.25rem); }
+html[lang="ur"] .hero-points { gap: .35rem 1.6rem; }
+html[lang="ur"] .hero-points li { margin-block-end: 0; line-height: 1.9; }
+html[lang="ur"] .eyebrow { margin-block-end: .2rem; }
+
+/* ---- forms: every single-line control is the same height ---- */
+.field input:not([type=checkbox]):not([type=radio]), .field select {
+  box-sizing: border-box; min-block-size: 52px; block-size: 52px;
+}
+html[lang="ur"] .field input:not([type=checkbox]):not([type=radio]), html[lang="ur"] .field select {
+  min-block-size: 52px; block-size: 52px; line-height: 1.6; padding-block: .3rem 0;
+}
+.field select { padding-inline-end: 2.2rem; }
+.field { position: relative; }
+
+/* ---- Urdu fees table: compact rows, columns kept close together ---- */
+html[lang="ur"] .fee-table { max-inline-size: 24rem; margin-inline: auto; }
+html[lang="ur"] .fee-table th, html[lang="ur"] .fee-table td { padding: .6rem .9rem; line-height: 1.9; }
+html[lang="ur"] .fee-table thead th { padding-block: .4rem; }
+html[lang="ur"] .fee-table caption { line-height: 1.8; padding-block-end: .5rem; text-align: center; }
+html[lang="ur"] .fee-table td.price, html[lang="ur"] .fee-table th:last-child { inline-size: 6.5rem; text-align: start; }
+html[lang="ur"] .fee-table td.price { text-align: left; }
+html[lang="ur"] .fee-wrap { padding: 1.2rem 1rem; }
+
+/* ---- Arabic fees table: same compact layout as Urdu ---- */
+html[lang="ar"] .fee-table { max-inline-size: 24rem; margin-inline: auto; }
+html[lang="ar"] .fee-table th, html[lang="ar"] .fee-table td { padding: .7rem .9rem; }
+html[lang="ar"] .fee-table caption { text-align: center; padding-block-end: .6rem; }
+html[lang="ar"] .fee-table td.price, html[lang="ar"] .fee-table th:last-child { inline-size: 6.5rem; }
+html[lang="ar"] .fee-table td.price { text-align: left; }
+html[lang="ar"] .fee-wrap { padding: 1.3rem 1rem; }
+
+/* the form status note must stay hidden until the script reveals it */
+#formNote[hidden] { display: none !important; }
+
+/* ---- Urdu long-form pages (policies, guides): em-based margins were scaling with the big nastaliq headings ---- */
+html[lang="ur"] .prose h2 { margin-block-start: 1.1em; margin-block-end: .2em; }
+html[lang="ur"] .prose h3 { margin-block-start: .9em; }
+html[lang="ur"] .prose p { margin-block-end: .8em; }
+html[lang="ur"] .page-head { padding-block-end: 0; }
+html[lang="ur"] .page-head .lede { margin-block-end: .4em; }
+html[lang="ur"] .page-head + section { padding-block-start: 1rem; }
+
+/* ---- Urdu buttons: Mehr's ink sits low in its line box, so give the bottom more padding
+        and keep the line box compact; label then centres optically ---- */
+html[lang="ur"] .btn { line-height: 1.45; padding-block: .3rem .75rem; }
+html[lang="ur"] .btn > span, html[lang="ur"] .btn svg { margin-block-start: 0; }
+html[lang="ur"] .head-cta .btn { padding-block: 0 .45em; }
+html[lang="ur"] .lang { line-height: 1.3; padding-block: 0 .15rem; }
+
+/* ---- RTL steps: direction:ltr on the badge flipped its own inset, sending it to the far left ---- */
+html[dir="rtl"] .steps > li::before { inset-inline-start: auto; inset-inline-end: auto; right: 0; left: auto; }
+
+/* ---- footer contact links must wrap inside their column, never spill out of it ---- */
+.foot-contact a { max-inline-size: 100%; overflow-wrap: anywhere; word-break: break-word; }
+.foot-top > * { min-inline-size: 0; }
+
+/* ---- Urdu page headers: trim the dead air above and around the title ---- */
+html[lang="ur"] .crumbs { line-height: 1.6; padding-block-start: .6rem; }
+html[lang="ur"] .page-head { padding-block-start: 1.4rem; }
+html[lang="ur"] .page-head h1 { line-height: 1.55; margin-block-end: .25em; padding-block-start: 0; }
+html[lang="ur"] .page-head .lede { margin-block: .2em .4em; }
+html[lang="ur"] .page-head .eyebrow { line-height: 1.8; margin-block-end: .1rem; }
+
+/* real WhatsApp glyph is a solid shape, so it reads best slightly larger than the line icons */
+.btn-wa svg { inline-size: 1.3em; block-size: 1.3em; }
+.foot-contact svg { inline-size: 1.1em; block-size: 1.1em; }
+
+/* ==========================================================================
+   Rich content blocks: guides and course pages
+   ========================================================================== */
+.ar { font-family: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", serif; font-size: 1.3em; line-height: 1.5;
+      font-weight: 400; letter-spacing: 0; unicode-bidi: isolate; }
+
+.rich { max-inline-size: 60rem; }
+.rich > p, .rich > h2, .rich > h3, .rich > .callout, .rich > .check, .rich > .stairs { max-inline-size: 46rem; }
+.rich h2 { margin-block-start: 2.4em; scroll-margin-block-start: 6rem; }
+.rich > :first-child { margin-block-start: 0; }
+.rich h3 { margin-block: 1.6em .5em; }
+
+/* ---- reading aids: on this page ---- */
+.toc { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg);
+       padding: 1.1rem 1.4rem; margin-block-end: 2.2rem; max-inline-size: 46rem; }
+.toc strong { display: block; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-block-end: .5rem; }
+.toc ol { margin: 0; padding-inline-start: 1.2em; columns: 2 15rem; column-gap: 2rem; font-size: .95rem; }
+.toc li { margin-block-end: .35em; break-inside: avoid; }
+.readtime { color: var(--muted); font-size: .88rem; margin-block-start: .8rem; }
+
+/* ---- stat cards ---- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 1rem; margin-block: 1.8rem; }
+.stat { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg);
+        padding: 1.15rem 1.2rem 1.2rem; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: .2rem; }
+.stat::before { content: ""; position: absolute; inset-block-start: 0; inset-inline: 0; block-size: 4px;
+                background: linear-gradient(90deg, var(--green), var(--gold)); }
+.stat-v { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.7rem);
+          line-height: 1.05; color: var(--green); letter-spacing: -.02em; }
+.stat-l { font-weight: 650; font-size: .95rem; color: var(--ink); }
+.stat-n { font-size: .82rem; color: var(--muted); line-height: 1.45; }
+
+/* ---- data tables ---- */
+.data { margin: 1.8rem 0; }
+.data-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper);
+               -webkit-overflow-scrolling: touch; }
+.data-table { inline-size: 100%; border-collapse: collapse; font-size: .94rem; min-inline-size: 30rem; }
+.data-table caption { caption-side: top; text-align: start; font-weight: 650; padding: 1rem 1.2rem .3rem; color: var(--ink);
+                      font-family: var(--font); font-size: 1rem; }
+.data-table th, .data-table td { text-align: start; padding: .8rem 1.2rem; vertical-align: top;
+                                 border-block-end: 1px solid var(--line-soft); line-height: 1.55; }
+.data-table thead th { background: #E4EFE4; color: #566678; font-size: .75rem; letter-spacing: .09em; text-transform: uppercase;
+                       font-weight: 700; border-block-end: 1px solid var(--line); }
+.data-table tbody th { font-weight: 650; color: var(--green-dark); }
+.data-table tbody tr:nth-child(even) { background: rgba(46,64,82,.03); }
+.data-table tbody tr:last-child > * { border-block-end: 0; }
+.data-table .ar { font-size: 1.45em; line-height: 1.3; }
+.data .note-sm { margin-block-start: .6rem; }
+
+/* ---- callouts ---- */
+.callout { display: flex; gap: .9rem; align-items: flex-start; border-radius: var(--radius-lg); padding: 1.1rem 1.3rem;
+           margin-block: 1.8rem; border: 1px solid var(--line); border-inline-start-width: 5px; background: var(--paper); }
+.callout-i { flex: none; inline-size: 1.7rem; block-size: 1.7rem; border-radius: 50%; display: grid; place-items: center;
+             font-weight: 800; font-size: .95rem; color: #fff; margin-block-start: .1rem; }
+.callout strong { display: block; margin-block-end: .15rem; color: var(--ink); }
+.callout p { margin: 0; font-size: .96rem; color: #3A4D60; }
+.callout-note { border-inline-start-color: var(--green); background: #EEF5EE; }
+.callout-note .callout-i { background: var(--green); }
+.callout-tip { border-inline-start-color: var(--gold); background: #FFF4D8; }
+.callout-tip .callout-i { background: #C98D14; }
+.callout-warn { border-inline-start-color: #B4532F; background: #FBF0EA; }
+.callout-warn .callout-i { background: #B4532F; }
+
+/* ---- bar charts ---- */
+.chart { margin: 1.8rem 0; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.2rem 1.4rem 1.3rem; }
+.chart figcaption { font-weight: 650; margin-block-end: .9rem; font-size: 1rem; }
+.bar-row { display: grid; grid-template-columns: minmax(6.5rem, 11rem) 1fr auto; gap: .9rem; align-items: center; margin-block-end: .6rem; font-size: .92rem; }
+.bar-t { block-size: 14px; background: #DDEADD; border-radius: 100px; overflow: hidden; }
+.bar-f { display: block; block-size: 100%; border-radius: 100px; background: var(--green); min-inline-size: 6px; }
+.bar-f.c1 { background: #7FB08A; }
+.bar-f.c2 { background: var(--gold); }
+.bar-v { font-weight: 700; color: var(--green-dark); font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 560px) { .bar-row { grid-template-columns: 1fr auto; } .bar-l { grid-column: 1 / -1; font-weight: 600; } }
+
+/* ---- donut ---- */
+.donut-in { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+.donut svg { inline-size: 12.5rem; block-size: 12.5rem; flex: none; }
+.d-v { font-family: var(--font-display); font-size: 8px; font-weight: 700; fill: var(--green); }
+.d-l { font-size: 2.6px; fill: #6B7C8D; }
+.legend { list-style: none; margin: 0; padding: 0; flex: 1 1 14rem; }
+.legend li { display: flex; align-items: center; gap: .7rem; padding-block: .4rem; border-block-end: 1px solid var(--line-soft); font-size: .93rem; }
+.legend li:last-child { border-block-end: 0; }
+.legend .sw { inline-size: .9rem; block-size: .9rem; border-radius: 4px; flex: none; }
+.legend strong { margin-inline-start: auto; color: var(--green-dark); }
+
+/* ---- stairs ---- */
+.stairs { list-style: none; margin: 1.8rem 0; padding: 0; display: grid; gap: .7rem; }
+.stairs li { display: flex; gap: 1rem; align-items: flex-start; background: var(--paper); border: 1px solid var(--line);
+             border-radius: var(--radius-lg); padding: 1rem 1.2rem; margin-inline-start: calc(var(--i) * clamp(.3rem, 1.6vw, 1.1rem));
+             position: relative; }
+.stairs li::before { content: ""; position: absolute; inset-inline-start: -1px; inset-block: 14px; inline-size: 4px;
+                     border-radius: 4px; background: linear-gradient(var(--gold), var(--green)); }
+.st-n { flex: none; inline-size: 2.2rem; block-size: 2.2rem; border-radius: 50%; background: var(--green); color: #fff;
+        display: grid; place-items: center; font-weight: 700; font-size: .9rem; }
+.stairs strong { display: block; color: var(--ink); }
+.stairs p { margin: .15rem 0 0; font-size: .94rem; color: #4A5B6D; }
+
+/* ---- dots ---- */
+.dot-row { display: grid; grid-template-columns: 6rem 1fr auto; gap: .9rem; align-items: center; padding-block: .55rem;
+           border-block-end: 1px solid var(--line-soft); font-size: .93rem; }
+.dot-l { font-weight: 650; }
+.dot-s { display: flex; gap: .4rem; }
+.dot-s i { inline-size: 1.15rem; block-size: 1.15rem; border-radius: 50%; background: var(--green); box-shadow: inset 0 0 0 3px var(--paper), 0 0 0 1.5px var(--green); }
+.dot-c { color: var(--muted); font-size: .85rem; text-align: end; }
+@media (max-width: 520px) { .dot-row { grid-template-columns: 5rem 1fr; } .dot-c { grid-column: 1 / -1; text-align: start; } }
+
+/* ---- do / do not ---- */
+.compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; margin-block: 1.8rem; }
+.compare > div { border-radius: var(--radius-lg); padding: 1.2rem 1.4rem; border: 1px solid var(--line); }
+.compare h4 { margin: 0 0 .6rem; }
+.compare ul { list-style: none; margin: 0; padding: 0; }
+.compare li { position: relative; padding-inline-start: 1.7rem; margin-block-end: .55rem; font-size: .95rem; line-height: 1.55; }
+.compare li::before { position: absolute; inset-inline-start: 0; font-weight: 800; }
+.cmp-yes { background: #EEF5EE; border-color: #D5DEE7 !important; }
+.cmp-yes li::before { content: "\2713"; color: var(--green); }
+.cmp-no { background: #FBF3EE; border-color: #EBD3C6 !important; }
+.cmp-no li::before { content: "\2715"; color: #B4532F; }
+
+/* ---- mini cards + glyph tiles ---- */
+.mini-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin-block: 1.8rem; }
+.mini { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; border-block-start: 3px solid var(--gold); }
+.mini h4 { margin: 0 0 .35rem; color: var(--green-dark); }
+.mini p { margin: 0; font-size: .92rem; color: #4A5B6D; line-height: 1.55; }
+.glyphs { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.2rem, 1fr)); gap: .8rem; margin-block: 1.8rem; }
+.glyph { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: .7rem .4rem .6rem; text-align: center;
+         display: flex; flex-direction: column; align-items: center; gap: .1rem; }
+.glyph .ar { font-size: 2.5rem; line-height: 1.5; color: var(--green); }
+.glyph small { font-size: .74rem; color: var(--muted); }
+
+/* ---- course path (a connected shape) ---- */
+.path { list-style: none; margin: 1.2rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem .9rem; }
+.path li { position: relative; }
+.path a { display: flex; align-items: center; gap: .55rem; padding: .4rem .95rem .4rem .4rem; border-radius: 100px; text-decoration: none;
+          border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: .88rem; font-weight: 550; }
+.path a:hover { border-color: var(--green); color: var(--green); }
+.path .pn { inline-size: 1.75rem; block-size: 1.75rem; border-radius: 50%; display: grid; place-items: center; background: #E4EFE4;
+            color: var(--green-dark); font-weight: 700; font-size: .78rem; }
+.path li.on a { background: var(--green); color: #fff; border-color: var(--green); box-shadow: var(--shadow-sm); }
+.path li.on .pn { background: var(--gold); color: #2E4052; }
+.path li:not(:last-child)::after { content: "\203A"; position: absolute; inset-inline-end: -.68rem; inset-block-start: 50%;
+                                   transform: translateY(-54%); color: var(--gold); font-size: 1.1rem; font-weight: 700; pointer-events: none; }
+.path-wrap { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.3rem 1.5rem; }
+.path-wrap h3 { margin: 0 0 .2rem; }
+.path-wrap p { margin: 0; font-size: .93rem; color: var(--muted); }
+
+/* ---------------------------------------------------------------- button refinement
+   Lighter, slimmer, more even buttons across the site. */
+.btn {
+  font-size: .9rem; font-weight: 500; letter-spacing: .005em;
+  padding: .66rem 1.35rem; min-block-size: 44px; border-width: 1px;
+}
+.btn-primary, .btn-gold, .btn-wa { box-shadow: 0 1px 2px rgba(46,64,82,.18); }
+.btn-primary:hover, .btn-gold:hover, .btn-wa:hover { box-shadow: 0 4px 12px rgba(46,64,82,.18); }
+.btn-ghost { border-color: #BDD9BF; background: transparent; }
+.btn svg { inline-size: 1em; block-size: 1em; }
+.btn-wa svg { inline-size: 1.15em; block-size: 1.15em; }
+.card .btn { padding: .5rem .9rem; font-size: .84rem; min-block-size: 40px; }
+.btn-row .btn { min-inline-size: 8.5rem; }
+.lang {
+  font-size: .85rem; font-weight: 500; border-radius: 100px; padding: 0 .95rem;
+  border-color: #BDD9BF; background: transparent; gap: .45em;
+}
+.lang svg { inline-size: 1em; block-size: 1em; opacity: .75; }
+.head-cta .btn, .head-cta .lang, .head-cta .burger { min-block-size: 40px; block-size: 40px; }
+.head-cta .btn { padding-inline: 1.2rem; font-size: .875rem; }
+html[lang="ar"] .btn { font-weight: 600; }
+html[lang="ar"] .head-cta .btn, html[lang="ur"] .head-cta .btn { min-block-size: 40px; }
+html[lang="ur"] .btn, html[lang="ur"] .lang { font-weight: 400; }
+html[lang="ur"] .lang { min-block-size: 40px; }
+
+/* ---------------------------------------------------------------- polish: depth, gradients, motion */
+.btn-primary {
+  background: linear-gradient(180deg, #3B5169 0%, var(--green) 55%, #243342 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(34,48,63,.25), 0 6px 14px -4px rgba(46,64,82,.38);
+}
+.btn-primary:hover {
+  background: linear-gradient(180deg, #465F79 0%, #293A4B 55%, #22303F 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 2px 4px rgba(34,48,63,.25), 0 12px 24px -6px rgba(46,64,82,.45);
+}
+.btn-gold {
+  background: linear-gradient(180deg, #FFD167 0%, var(--gold) 60%, #EDAE2F 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 1px 2px rgba(120,80,0,.25), 0 6px 14px -4px rgba(255,200,87,.55);
+}
+.btn-gold:hover {
+  background: linear-gradient(180deg, #FFDC95 0%, #FFC857 60%, #EDAE2F 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 2px 4px rgba(120,80,0,.25), 0 12px 24px -6px rgba(255,200,87,.6);
+}
+.btn-wa {
+  background: linear-gradient(180deg, #27B862 0%, #1FA855 60%, #178C46 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 1px 2px rgba(10,70,35,.25), 0 6px 14px -4px rgba(31,168,85,.5);
+}
+.btn-ghost { box-shadow: 0 1px 2px rgba(34,48,63,.05); }
+.btn-ghost:hover { background: #fff; box-shadow: 0 8px 18px -8px rgba(46,64,82,.3); }
+.btn-ghost-light:hover { box-shadow: 0 8px 20px -8px rgba(0,0,0,.4); }
+.btn:focus-visible, .lang:focus-visible { outline: 3px solid rgba(255,200,87,.55); outline-offset: 2px; }
+.lang { box-shadow: 0 1px 2px rgba(34,48,63,.06); }
+.lang:hover { background: #fff; box-shadow: 0 6px 14px -6px rgba(46,64,82,.3); }
+.site-head { box-shadow: 0 1px 0 rgba(34,48,63,.04), 0 8px 24px -16px rgba(34,48,63,.25); }
+
+/* cards */
+.card {
+  box-shadow: 0 1px 2px rgba(34,48,63,.05), 0 8px 24px -12px rgba(34,48,63,.18);
+  background: linear-gradient(180deg, #fff 0%, var(--paper) 100%);
+}
+.card::after {
+  content: ""; position: absolute; inset-inline: 0; inset-block-end: 0; block-size: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--green));
+  transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease);
+}
+html[dir="rtl"] .card::after { transform-origin: right; }
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 2px 4px rgba(34,48,63,.06), 0 22px 44px -14px rgba(34,48,63,.3);
+}
+.card:hover::after { transform: scaleX(1); }
+.card-art { overflow: hidden; }
+.card-art img { transition: transform .6s var(--ease); }
+.card:hover .card-art img { transform: scale(1.05); }
+
+/* tables, fees, forms, faq, steps */
+.fee-wrap, .fee-table { border-radius: var(--radius-lg); }
+.fee-wrap {
+  background: #fff; border: 1px solid var(--line); padding: 1.4rem 1.5rem;
+  box-shadow: 0 1px 2px rgba(34,48,63,.05), 0 14px 34px -18px rgba(34,48,63,.3);
+  position: relative; overflow: hidden;
+}
+.fee-wrap::before {
+  content: ""; position: absolute; inset-inline: 0; inset-block-start: 0; block-size: 4px;
+  background: linear-gradient(90deg, var(--green), var(--gold));
+}
+.fee-table tbody tr { transition: background-color .15s; }
+.fee-table tbody tr:hover { background: rgba(255,200,87,.08); }
+.data-table tbody tr:hover { background: rgba(255,200,87,.07); }
+.stat, .mini, .callout, figure.chart, figure.data {
+  box-shadow: 0 1px 2px rgba(34,48,63,.05), 0 10px 26px -16px rgba(34,48,63,.28);
+}
+.stat, .mini { transition: transform .22s var(--ease), box-shadow .22s var(--ease); }
+.stat:hover, .mini:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgba(34,48,63,.06), 0 18px 34px -14px rgba(34,48,63,.3); }
+.faq details {
+  background: #fff; border: 1px solid var(--line); border-radius: 14px; margin-block-end: .7rem;
+  padding-inline: 1.2rem; box-shadow: 0 1px 2px rgba(34,48,63,.04);
+  transition: box-shadow .2s var(--ease), border-color .2s var(--ease);
+}
+.faq { border-block-start: 0; }
+.faq details[open] { border-color: rgba(255,200,87,.55); box-shadow: 0 12px 28px -16px rgba(34,48,63,.3); }
+.faq summary:hover { color: var(--green); }
+.pill { box-shadow: 0 1px 2px rgba(34,48,63,.05); transition: all .18s var(--ease); }
+.pill:hover { transform: translateY(-1px); box-shadow: 0 6px 14px -8px rgba(46,64,82,.4); }
+.cta-strip {
+  background: radial-gradient(120% 140% at 85% -20%, rgba(255,200,87,.28), transparent 55%),
+              linear-gradient(135deg, var(--green-dark), var(--green));
+  box-shadow: 0 24px 50px -22px rgba(34,48,63,.6);
+}
+.form-card, form.reg, .form-wrap {
+  box-shadow: 0 1px 2px rgba(34,48,63,.05), 0 18px 40px -20px rgba(34,48,63,.3);
+}
+input, select, textarea { transition: border-color .15s, box-shadow .15s; }
+input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px rgba(46,64,82,.12); }
+img[style*="radius"] { box-shadow: 0 20px 44px -22px rgba(34,48,63,.45); }
+.eyebrow { letter-spacing: .14em; }
+@media (prefers-reduced-motion: reduce) {
+  .card, .card::after, .card-art img, .stat, .mini, .pill { transition: none; }
+  .card:hover, .stat:hover, .mini:hover { transform: none; }
+}
+
+/* star-only featured badge: a true circle with the star centred (all languages) */
+.tag.tag-star {
+  inline-size: 34px; block-size: 34px; padding: 0; justify-content: center;
+  line-height: 1; box-shadow: 0 4px 10px -3px rgba(120,80,0,.45);
+}
+.tag.tag-star svg { display: block; margin: 0; }
+html[lang="ur"] .tag.tag-star { padding: 0; line-height: 1; }
+
+/* ---------------------------------------------------------------- MOBILE (phone-first refinements) */
+@media (max-width: 760px) {
+  html { -webkit-text-size-adjust: 100%; }
+  /* comfortable touch targets */
+  .head-cta .lang, .head-cta .burger { min-block-size: 44px; block-size: 44px; }
+  .burger { inline-size: 44px; border-radius: 100px; }
+  .nav a { padding-block: .95rem; font-size: 1.02rem; }
+  .nav .nav-cta { margin-block-start: .6rem; text-align: center; border: 0; border-radius: 100px;
+    background: linear-gradient(180deg,#3B5169,var(--green)); color: #fff; padding-block: .9rem; }
+
+  /* forms: 16px stops iOS zooming into fields */
+  .field input, .field select, .field textarea { font-size: 16px; min-block-size: 50px; }
+  .form-grid { grid-template-columns: 1fr; }
+
+  /* tighter vertical rhythm, buttons full width and equal */
+  section { padding-block: clamp(2.4rem, 9vw, 3.2rem); }
+  .hero { padding-block: 2.6rem 2.2rem; }
+  .hero .btn-row, .cta-strip .btn-row, .page-head .btn-row { flex-direction: column; align-items: stretch; }
+  .hero .btn-row .btn, .cta-strip .btn-row .btn, .page-head .btn-row .btn { inline-size: 100%; }
+  .btn-row .btn { min-inline-size: 0; }
+  .hero .eyebrow { font-size: .7rem; letter-spacing: .1em; }
+  .hero h1 { font-size: clamp(2rem, 9.2vw, 2.6rem); line-height: 1.12; }
+
+  /* course cards: shorter art so nine cards scroll faster */
+  .card-art { aspect-ratio: 16 / 7.5; }
+  .card-body { padding: 1.15rem 1.15rem 1.25rem; }
+  .card:hover { transform: none; }
+  .fee-wrap { padding: 1.1rem 1rem; }
+  .cta-strip { border-radius: 18px; padding: 1.8rem 1.25rem; }
+  .form-card, .reg-card { padding: 1.2rem; }
+  .stats { grid-template-columns: 1fr 1fr; gap: .7rem; }
+  .stat { padding: 1rem .9rem; }
+  .stat-v { font-size: 1.7rem; }
+  .data-table { font-size: .86rem; }
+  .data-table th, .data-table td { padding: .6rem .65rem; }
+  .path { display: flex; overflow-x: auto; scroll-snap-type: x proximity; padding-block-end: .5rem; }
+  .path li { flex: none; scroll-snap-align: start; }
+}
+@media (max-width: 380px) {
+  .btn-row .btn { inline-size: 100%; }
+}
+
+/* ---------------------------------------------------------------- BUTTON FINISH (light, flat, refined)
+   Final word on buttons: solid fills, hairline borders, one soft shadow, medium-light type. */
+.btn {
+  font-size: .875rem; font-weight: 500; letter-spacing: .01em;
+  min-block-size: 42px; padding: .55rem 1.3rem; border-width: 1px; gap: .5em;
+}
+.btn-primary, .btn-primary:hover { background: var(--green); background-image: none; color: #fff;
+  border-color: var(--green); box-shadow: 0 2px 8px -3px rgba(34,48,63,.45); }
+.btn-primary:hover { background: #3B5169; border-color: #3B5169; }
+.btn-gold, .btn-gold:hover { background-image: none; background: var(--gold); border-color: var(--gold);
+  color: #2E4052; box-shadow: 0 2px 8px -3px rgba(214,150,20,.55); }
+.btn-gold:hover { background: #FFD167; border-color: #FFD167; }
+.btn-wa, .btn-wa:hover { background-image: none; background: #1FA855; border-color: #1FA855; color: #fff;
+  box-shadow: 0 2px 8px -3px rgba(31,168,85,.5); }
+.btn-wa:hover { background: #1A9549; border-color: #1A9549; }
+.btn-ghost { background: transparent; border-color: #BDD9BF; color: var(--green); box-shadow: none; }
+.btn-ghost:hover { background: rgba(189,217,191,.25); border-color: #9CC49F; box-shadow: none; }
+.btn-ghost-light { border-color: rgba(255,255,255,.4); background: transparent; box-shadow: none; }
+.btn:hover { transform: none; }
+.btn svg { inline-size: .95em; block-size: .95em; }
+.btn-wa svg { inline-size: 1.1em; block-size: 1.1em; }
+.btn-row .btn { min-inline-size: 0; }
+.card .btn { min-block-size: 38px; padding: .4rem .95rem; font-size: .82rem; }
+
+/* header controls: small, quiet, same height */
+.head-cta .btn, .head-cta .lang, .head-cta .burger { min-block-size: 38px; block-size: 38px; }
+.head-cta .btn { padding-inline: 1.05rem; font-size: .82rem; }
+.lang { font-size: .8rem; font-weight: 500; padding: 0 .85rem; border-color: #BDD9BF; background: transparent; box-shadow: none; color: var(--green); }
+.lang:hover { background: rgba(189,217,191,.25); box-shadow: none; }
+.burger { border-radius: 100px; border-color: #BDD9BF; background: transparent; inline-size: 38px; block-size: 38px; box-shadow: none; }
+.burger svg { inline-size: 18px; block-size: 18px; }
+
+@media (max-width: 760px) {
+  .head-cta .lang, .head-cta .burger { min-block-size: 38px; block-size: 38px; }
+  .burger { inline-size: 38px; border-radius: 100px; }
+  .hero .btn-row, .cta-strip .btn-row, .page-head .btn-row { align-items: flex-start; flex-direction: row; flex-wrap: wrap; gap: .6rem; }
+  .hero .btn-row .btn, .cta-strip .btn-row .btn, .page-head .btn-row .btn { inline-size: auto; min-inline-size: 10rem; }
+  .cta-strip .btn-row { justify-content: center; }
+  .btn { min-block-size: 42px; }
+  .nav .nav-cta { background: var(--green); background-image: none; color: #fff; padding-block: .75rem; font-weight: 500; }
+}
+html[lang="ur"] .btn, html[lang="ur"] .lang { font-weight: 400; }
+html[lang="ur"] .head-cta .btn, html[lang="ur"] .head-cta .lang { min-block-size: 38px; }
+html[lang="ur"] .btn { min-block-size: 42px; padding-block: 0 .4rem; line-height: 1.5; font-size: .95rem; }
+html[lang="ur"] .card .btn { min-block-size: 38px; padding-block: 0 .35rem; }
+html[lang="ar"] .btn { min-block-size: 42px; font-weight: 500; }
+html[lang="ar"] .card .btn { min-block-size: 38px; }
