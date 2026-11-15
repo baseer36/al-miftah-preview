@@ -1191,3 +1191,7 @@ html[lang="ur"] .btn { min-block-size: 42px; padding-block: 0 .4rem; line-height
 html[lang="ur"] .card .btn { min-block-size: 38px; padding-block: 0 .35rem; }
 html[lang="ar"] .btn { min-block-size: 42px; font-weight: 500; }
 html[lang="ar"] .card .btn { min-block-size: 38px; }
+@media (max-width: 760px) {
+  html[lang="ur"] .site-foot h2 { line-height: 1.8; margin-block: .4rem .6rem; }
+  html[lang="ur"] .site-foot li { line-height: 1.9; }
+}
